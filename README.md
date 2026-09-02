@@ -69,16 +69,6 @@ jobs:
 2. `tag` 输入
 3. 当前 ref 名（`github.ref_name`，如 tag 推送时的 `v1.2.3`）
 
-## 本地自测
+## 开发
 
-```bash
-bash tests/self-test.sh
-```
-
-用例覆盖：白名单与额外文件的复制、白名单外文件排除、`VERSION` 文件与 ref 名两种版本号来源、`GITHUB_OUTPUT` 输出、UTF-8 内容完整性、必需文件缺失时报错。
-
-## 编码说明
-
-- 仓库内脚本与配置均为 UTF-8（无 BOM）、LF 换行，`.gitattributes` 已约束，Windows 下开发请勿改为 GBK 或 CRLF。
-- 读取 `VERSION` 与 `extra-files` 时会剔除 `\r`，兼容 CRLF 内容。
-- zip 内文件名以 UTF-8 编码写入。
+实现说明、本地自测与编码约定见 [DEVELOPMENT.md](DEVELOPMENT.md)。
