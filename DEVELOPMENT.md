@@ -7,7 +7,12 @@
 | 文件 | 说明 |
 | --- | --- |
 | `action.yml` | composite action 入口，定义输入输出 |
-| `scripts/release-skill.sh` | 核心脚本：白名单复制、版本号解析、打包、上传 |
+| `scripts/release-skill.sh` | 核心脚本入口：解析输入、校验并串联各阶段 |
+| `scripts/lib/common.sh` | 公共工具：日志、报错、input 读取 |
+| `scripts/lib/whitelist.sh` | 白名单与额外文件复制到 `dist/<小写名称>` |
+| `scripts/lib/version.sh` | 版本号解析：`VERSION` 文件 > tag 输入 > ref 名 |
+| `scripts/lib/pack.sh` | zip 打包（zip 优先、Python 回退）与内容清单 |
+| `scripts/lib/upload.sh` | GitHub Release 创建与资产上传 |
 | `scripts/verify-tag-version.sh` | release.yml 使用：校验触发 tag 与 VERSION 文件一致 |
 | `scripts/update-major-tag.sh` | release.yml 使用：正式版强制更新主版本标签 |
 | `tests/self-test.sh` | 自测脚本（不上传，仅验证打包） |
@@ -56,6 +61,7 @@ CI 在 ubuntu runner 上运行同一脚本，天然覆盖 `zip` 打包路径；�
 ## 编码约定
 
 - workflow 不放内联脚本，逻辑一律拆到 `scripts/` 下的 sh 文件，workflow 里只写 `bash scripts/xxx.sh`。
+- sh 单文件不要塞太满：入口 `release-skill.sh` 只做输入解析与流程编排，阶段逻辑按职责放 `scripts/lib/`，新逻辑优先新建模块文件。
 - shell 脚本用 [shfmt](https://github.com/mvdan/sh) 格式化：`shfmt -w -i 2 -bn -ci scripts/*.sh tests/*.sh`。
 - 仓库内脚本与配置均为 UTF-8（无 BOM）、LF 换行，`.gitattributes` 已约束；Windows 下开发请勿改为 GBK 或 CRLF。
 - 读取 `VERSION` 与 `extra-files` 时会剔除 `\r`，兼容 CRLF 内容。
