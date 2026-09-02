@@ -4,6 +4,8 @@
 
 将 Skill 按白名单打包为 zip 并上传至 GitHub Release 的 GitHub Action（composite）。
 
+> **注意**：项目目前处于测试阶段（`v1.0-beta.1`），尚未发布 v1 正式版，`@v1` 引用暂不可用，请先使用 `@main`。
+
 ## 使用
 
 在被打包的 Skill 所在仓库中创建 workflow。

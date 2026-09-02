@@ -4,6 +4,8 @@
 
 A GitHub Action (composite) that packages a Skill into a zip file following a whitelist and uploads it to a GitHub Release.
 
+> **Note**: This project is currently in beta (`v1.0-beta.1`); v1 has not been released yet. The `@v1` ref is not available at the moment — please use `@main` for now.
+
 ## Usage
 
 Create a workflow in the repository containing the Skill to be packaged.
