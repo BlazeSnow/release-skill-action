@@ -1,0 +1,49 @@
+name: 'Release Skill'
+description: '将 Skill 按白名单打包为 zip 并上传至 GitHub Release'
+author: 'BlazeSnow'
+
+branding:
+  icon: 'package'
+  color: 'blue'
+
+inputs:
+  skill-name:
+    description: 'Skill 名称（用于 zip 文件名）'
+    required: true
+  skill-lower-name:
+    description: 'Skill 小写名称（实际部署名称，即 zip 内的根目录名）'
+    required: true
+  base-dir:
+    description: 'BASE 目录（相对于仓库根目录，白名单文件所在位置）'
+    required: true
+  extra-files:
+    description: '额外复制的文件或文件夹，每行一个（相对于 BASE 目录）'
+    required: false
+    default: ''
+  tag:
+    description: '目标 Release 的 tag（默认为当前 ref 名称，建议以 tag 推送触发）'
+    required: false
+    default: ''
+  token:
+    description: 'GitHub Token（用于创建/上传 Release）'
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  zip-name:
+    description: '生成的 zip 文件名'
+    value: ${{ steps.release.outputs.zip-name }}
+  zip-path:
+    description: '生成的 zip 文件绝对路径'
+    value: ${{ steps.release.outputs.zip-path }}
+  version:
+    description: '使用的版本号（VERSION 文件优先，其次为当前 ref 名称）'
+    value: ${{ steps.release.outputs.version }}
+
+runs:
+  using: 'composite'
+  steps:
+    - id: release
+      name: 打包并上传 Skill
+      shell: bash
+      run: bash "${{ github.action_path }}/scripts/release-skill.sh"
