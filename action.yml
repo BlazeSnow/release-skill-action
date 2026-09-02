@@ -1,6 +1,6 @@
 name: 'Release Skill'
 description: '将 Skill 按白名单打包为 zip 并上传至 GitHub Release'
-author: 'BlazeSnowSkill'
+author: 'BlazeSnow'
 
 branding:
   icon: 'package'

@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: BlazeSnowSkill/release-skill-action@v1
+      - uses: BlazeSnow/release-skill-action@v1
         with:
           skill-name: MySkill
           skill-lower-name: myskill
