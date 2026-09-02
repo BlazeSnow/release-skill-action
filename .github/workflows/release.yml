@@ -1,0 +1,47 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v7
+
+      - name: 校验 tag 与 VERSION 一致
+        run: |
+          version="$(head -n 1 VERSION | tr -d ' \t\r\n')"
+          if [ "$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::tag ($GITHUB_REF_NAME) 与 VERSION ($version) 不一致"
+            exit 1
+          fi
+
+      - name: 运行自测
+        run: bash tests/self-test.sh
+
+      - name: 创建 GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            echo "Release 已存在，跳过创建"
+          else
+            gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --generate-notes
+          fi
+
+      - name: 更新主版本标签（供 @v主版本 引用）
+        run: |
+          major="${GITHUB_REF_NAME%%.*}"
+          if [ "$major" = "$GITHUB_REF_NAME" ]; then
+            echo "tag 不含次版本号，跳过主版本标签更新"
+            exit 0
+          fi
+          git tag -f "$major" "$GITHUB_SHA"
+          git push --force origin "refs/tags/$major"

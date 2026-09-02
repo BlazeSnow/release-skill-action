@@ -9,7 +9,22 @@
 | `action.yml` | composite action 入口，定义输入输出 |
 | `scripts/release-skill.sh` | 核心脚本：白名单复制、版本号解析、打包、上传 |
 | `tests/self-test.sh` | 自测脚本（不上传，仅验证打包） |
+| `VERSION` | 本仓库自身的版本号，与发布的 tag 保持一致 |
+| `tag.ps1` | 本地发布脚本：校验工作区后推送 VERSION 对应的 tag |
 | `.github/workflows/ci.yml` | push/PR 时在 ubuntu 上运行自测 |
+| `.github/workflows/release.yml` | tag 推送时校验一致性、自测、创建 Release 并更新主版本标签 |
+
+## 发布流程
+
+1. 修改 `VERSION`（如 `v1.0-beta.1`）并提交。
+2. 运行 `./tag.ps1`：校验工作区干净、版本号格式、本地与远端无同名 tag 后，推送该 tag。
+3. `release.yml` 自动执行：
+   - 校验 tag 与 `VERSION` 一致（防止忘记更新 VERSION）；
+   - 运行自测；
+   - 创建 GitHub Release（自动生成说明）；
+   - 强制更新主版本标签（如 `v1.0-beta.1` → `v1`），使用方通过 `uses: BlazeSnowSkill/release-skill-action@v1` 稳定引用。
+
+`tag.ps1` 为 UTF-8（带 BOM）+ CRLF 编码，兼容 Windows PowerShell 5.1 的中文输出。
 
 ## 实现说明
 
