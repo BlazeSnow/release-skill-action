@@ -20,3 +20,13 @@
 2. 以 <小写名称> 为基，打包为 zip 文件
 3. zip 文件名为 <skill名称>-Skill-<版本号>.zip
 4. 上传至 GitHub Release
+
+## 白名单文件
+
+1. references/
+2. scripts/
+3. SKILL.md
+4. CHANGELOG.md （可选）
+5. LICENSE （可选）
+6. README.md （可选）
+7. VERSION （可选）
