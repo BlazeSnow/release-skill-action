@@ -65,8 +65,8 @@ copy_item() { # $1=相对路径 $2=required|optional
 
 log '复制白名单文件:'
 copy_item 'SKILL.md' required
-copy_item 'references' required
-copy_item 'scripts' required
+copy_item 'references' optional
+copy_item 'scripts' optional
 copy_item 'CHANGELOG.md' optional
 copy_item 'LICENSE' optional
 copy_item 'README.md' optional

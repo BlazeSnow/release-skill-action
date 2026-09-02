@@ -55,8 +55,8 @@ jobs:
 ## 打包规则
 
 1. 将 BASE 目录中的白名单文件复制到 `dist/<skill-lower-name>`：
-   - 必需：`SKILL.md`、`references/`、`scripts/`（缺失时直接报错）
-   - 可选：`CHANGELOG.md`、`LICENSE`、`README.md`、`VERSION`
+   - 必需：`SKILL.md`（缺失时直接报错）
+   - 可选：`references/`、`scripts/`、`CHANGELOG.md`、`LICENSE`、`README.md`、`VERSION`
 2. 以 `<skill-lower-name>` 为根目录打包为 zip。
 3. zip 文件名为 `<skill-name>-Skill-<版本号>.zip`。
 4. 上传至 GitHub Release：Release 已存在则上传并覆盖同名资产，不存在则创建并自动生成说明。

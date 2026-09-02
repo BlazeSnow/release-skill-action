@@ -105,7 +105,7 @@ print("[self-test] 用例2: 版本号回退与 python 打包校验通过")
 PYEOF
 pass '用例2通过: 版本号回退到 ref 名'
 
-# ---------- 用例3: 缺少白名单必需项时应当报错退出 ----------
+# ---------- 用例3: 缺少 SKILL.md 时应当报错退出 ----------
 CASE3="$TMP/case3"
 mkdir -p "$CASE3/base"
 if run_pack "$CASE3" env \
@@ -114,6 +114,32 @@ if run_pack "$CASE3" env \
   'INPUT_BASE-DIR=base'; then
   fail '用例3: 缺少 SKILL.md 时应当报错退出'
 fi
-pass '用例3通过: 缺少白名单必需项时报错'
+pass '用例3通过: 缺白名单必需项时报错'
+
+# ---------- 用例4: 仅含 SKILL.md 的最小 Skill（无 references/scripts）应可打包 ----------
+CASE4="$TMP/case4"
+mkdir -p "$CASE4/base"
+printf '# Minimal\n' > "$CASE4/base/SKILL.md"
+
+run_pack "$CASE4" env \
+  'INPUT_SKILL-NAME=Minimal' \
+  'INPUT_SKILL-LOWER-NAME=minimal' \
+  'INPUT_BASE-DIR=base' \
+  'INPUT_TOKEN=fake-token' \
+  GITHUB_REF_NAME=v0.1.0
+
+"$PY" - "$CASE4" <<'PYEOF'
+import os
+import sys
+import zipfile
+
+ws = sys.argv[1]
+zip_path = os.path.join(ws, "dist", "Minimal-Skill-v0.1.0.zip")
+assert os.path.isfile(zip_path), f"缺少 zip: {zip_path}"
+files = {n for n in zipfile.ZipFile(zip_path).namelist() if not n.endswith("/")}
+assert files == {"minimal/SKILL.md"}, f"zip 内容不符合预期: {sorted(files)}"
+print("[self-test] 用例4: 最小 Skill 打包校验通过")
+PYEOF
+pass '用例4通过: 无 references/scripts 的最小 Skill 可正常打包'
 
 pass '全部自测通过'

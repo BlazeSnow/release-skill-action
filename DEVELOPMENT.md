@@ -14,7 +14,7 @@
 ## 实现说明
 
 - **输入读取**：复合动作的 input 以 `INPUT_<大写名称>` 环境变量传入，名称中的连字符保留，bash 无法以 `$` 直接引用，脚本统一通过 `printenv` 读取并剔除 `\r`。
-- **白名单复制**：必需项（`SKILL.md`、`references/`、`scripts/`）缺失时直接报错退出；可选项（`CHANGELOG.md`、`LICENSE`、`README.md`、`VERSION`）缺失时记录日志并跳过；`extra-files` 每行一个，支持 `#` 注释，禁止上级路径逃逸。
+- **白名单复制**：必需项（`SKILL.md`）缺失时直接报错退出；可选项（`references/`、`scripts/`、`CHANGELOG.md`、`LICENSE`、`README.md`、`VERSION`）缺失时记录日志并跳过；`extra-files` 每行一个，支持 `#` 注释，禁止上级路径逃逸。
 - **版本号**：`VERSION` 文件第一行 > `tag` 输入 > `GITHUB_REF_NAME`；读取时剔除首尾空白与 `\r`。
 - **打包**：优先使用 `zip`，找不到时回退 Python `zipfile`（可用环境变量 `RELEASE_SKILL_PACKER=zip|python` 强制指定）。Python 路径对非 ASCII 文件名会正确写入 UTF-8 标志位。
 - **上传**：通过 `gh` CLI；Release 已存在则 `gh release upload --clobber` 覆盖同名资产，不存在则 `gh release create --generate-notes` 创建。
@@ -30,7 +30,8 @@ bash tests/self-test.sh
 
 1. `VERSION` 文件决定版本号（含 CRLF 内容），白名单与额外文件正确复制、白名单外文件排除、`GITHUB_OUTPUT` 输出、zip 内 UTF-8 内容逐字节一致。
 2. 无 `VERSION` 文件时版本号回退到 ref 名，并强制 `RELEASE_SKILL_PACKER=python` 验证回退打包路径。
-3. 缺少白名单必需项（`SKILL.md`）时脚本报错退出。
+3. 缺少必需项（`SKILL.md`）时脚本报错退出。
+4. 仅含 `SKILL.md` 的最小 Skill（无 `references/`、`scripts/`）可正常打包。
 
 CI 在 ubuntu runner 上运行同一脚本，天然覆盖 `zip` 打包路径；本地（Windows Git Bash）通常无 `zip`，覆盖 Python 路径。
 
