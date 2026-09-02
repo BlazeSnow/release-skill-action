@@ -50,6 +50,7 @@ jobs:
 | `skill-lower-name` | 是 | Skill 小写名称（实际部署名称），同时是 zip 内的根目录名 |
 | `base-dir` | 是 | BASE 目录，白名单文件所在位置（相对仓库根目录） |
 | `extra-files` | 否 | 额外复制的文件或文件夹，每行一个，相对 BASE 目录，支持 `#` 注释 |
+| `release-body` | 否 | Release 说明正文；提供后替换自动生成的变更说明 |
 | `tag` | 否 | 目标 Release 的 tag，默认取当前 ref 名（建议以 tag 推送触发） |
 | `token` | 否 | GitHub Token，默认 `github.token` |
 

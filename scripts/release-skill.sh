@@ -20,6 +20,7 @@ BASE_DIR_INPUT="$(get_input 'BASE-DIR')"
 EXTRA_FILES_INPUT="$(get_input 'EXTRA-FILES')"
 TAG_INPUT="$(get_input 'TAG')"
 TOKEN_INPUT="$(get_input 'TOKEN')"
+RELEASE_BODY="$(get_input 'RELEASE-BODY')"
 
 REF_NAME="${GITHUB_REF_NAME:-}"
 REPO_ROOT="${GITHUB_WORKSPACE:-$PWD}"
@@ -183,7 +184,12 @@ if gh release view "$TAG" >/dev/null 2>&1; then
   gh release upload "$TAG" "$ZIP_PATH" --clobber
 else
   log "创建 Release: $TAG"
-  create_args=(--title "${SKILL_NAME}-Skill-${VERSION}" --generate-notes)
+  create_args=(--title "${SKILL_NAME}-Skill-${VERSION}")
+  if [ -n "$RELEASE_BODY" ]; then
+    create_args+=(--notes "$RELEASE_BODY")
+  else
+    create_args+=(--generate-notes)
+  fi
   if [ -n "${GITHUB_SHA:-}" ]; then
     create_args+=(--target "$GITHUB_SHA")
   fi

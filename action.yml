@@ -20,6 +20,10 @@ inputs:
     description: '额外复制的文件或文件夹，每行一个（相对于 BASE 目录）'
     required: false
     default: ''
+  release-body:
+    description: 'Release 说明正文（提供后替换自动生成的变更说明）'
+    required: false
+    default: ''
   tag:
     description: '目标 Release 的 tag（默认为当前 ref 名称，建议以 tag 推送触发）'
     required: false
