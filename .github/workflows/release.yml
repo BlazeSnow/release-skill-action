@@ -27,19 +27,13 @@ jobs:
         run: bash tests/self-test.sh
 
       - name: 创建 GitHub Release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          create_args=(--title "$GITHUB_REF_NAME" --generate-notes)
-          if [[ "$GITHUB_REF_NAME" == *-* ]]; then
-            echo "tag 含 '-'，按预发布版本处理"
-            create_args+=(--prerelease)
-          fi
-          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
-            echo "Release 已存在，跳过创建"
-          else
-            gh release create "$GITHUB_REF_NAME" "${create_args[@]}"
-          fi
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          generateReleaseNotes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          allowUpdates: true
 
       - name: 更新主版本标签（仅正式版）
         run: |
