@@ -4,7 +4,10 @@ set -euo pipefail
 
 PREFIX='[release-skill]'
 log() { printf '%s %s\n' "$PREFIX" "$*"; }
-die() { printf '%s 错误: %s\n' "$PREFIX" "$*" >&2; exit 1; }
+die() {
+  printf '%s 错误: %s\n' "$PREFIX" "$*" >&2
+  exit 1
+}
 
 # 复合动作的 input 通过 INPUT_<大写名称> 环境变量传入（连字符保留，只能用 printenv 读取）
 get_input() { printenv "INPUT_$1" 2>/dev/null | tr -d '\r' || true; }
@@ -26,15 +29,15 @@ REPO_ROOT="${GITHUB_WORKSPACE:-$PWD}"
 [ -n "$BASE_DIR_INPUT" ] || die '缺少输入: base-dir'
 
 case "$SKILL_NAME" in
-  -*|*/*) die "skill-name 不允许以 - 开头或包含 /: $SKILL_NAME" ;;
+  -* | */*) die "skill-name 不允许以 - 开头或包含 /: $SKILL_NAME" ;;
 esac
 case "$SKILL_LOWER" in
-  ''|.|..|*/*|*[[:space:]]*) die "skill-lower-name 须为不含空格与路径分隔符的名称: $SKILL_LOWER" ;;
+  '' | . | .. | */* | *[[:space:]]*) die "skill-lower-name 须为不含空格与路径分隔符的名称: $SKILL_LOWER" ;;
 esac
 [ "$SKILL_LOWER" = "${SKILL_LOWER,,}" ] || die "skill-lower-name 必须全小写: $SKILL_LOWER"
 
 case "$BASE_DIR_INPUT" in
-  /*|[A-Za-z]:[\\/]*) BASE_DIR="$BASE_DIR_INPUT" ;;
+  /* | [A-Za-z]:[\\/]*) BASE_DIR="$BASE_DIR_INPUT" ;;
   *) BASE_DIR="$REPO_ROOT/$BASE_DIR_INPUT" ;;
 esac
 BASE_DIR="${BASE_DIR%/}"
@@ -79,10 +82,10 @@ while IFS= read -r line; do
   entry="${entry%"${entry##*[![:space:]]}"}"
   [ -n "$entry" ] || continue
   case "$entry" in
-    ..|../*|*/..|*/../*) die "extra-files 不允许包含上级路径: $entry" ;;
+    .. | ../* | */.. | */../*) die "extra-files 不允许包含上级路径: $entry" ;;
   esac
   copy_item "$entry" required
-done <<< "$EXTRA_FILES_INPUT"
+done <<<"$EXTRA_FILES_INPUT"
 
 # ---------- 2. 确定版本号：VERSION 文件 > tag 输入 > 当前 ref 名 ----------
 VERSION=''

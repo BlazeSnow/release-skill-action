@@ -8,6 +8,8 @@
 | --- | --- |
 | `action.yml` | composite action 入口，定义输入输出 |
 | `scripts/release-skill.sh` | 核心脚本：白名单复制、版本号解析、打包、上传 |
+| `scripts/verify-tag-version.sh` | release.yml 使用：校验触发 tag 与 VERSION 文件一致 |
+| `scripts/update-major-tag.sh` | release.yml 使用：正式版强制更新主版本标签 |
 | `tests/self-test.sh` | 自测脚本（不上传，仅验证打包） |
 | `VERSION` | 本仓库自身的版本号，与发布的 tag 保持一致 |
 | `tag.ps1` | 本地发布脚本：校验工作区后推送 VERSION 对应的 tag |
@@ -52,6 +54,8 @@ CI 在 ubuntu runner 上运行同一脚本，天然覆盖 `zip` 打包路径；�
 
 ## 编码约定
 
+- workflow 不放内联脚本，逻辑一律拆到 `scripts/` 下的 sh 文件，workflow 里只写 `bash scripts/xxx.sh`。
+- shell 脚本用 [shfmt](https://github.com/mvdan/sh) 格式化：`shfmt -w -i 2 -bn -ci scripts/*.sh tests/*.sh`。
 - 仓库内脚本与配置均为 UTF-8（无 BOM）、LF 换行，`.gitattributes` 已约束；Windows 下开发请勿改为 GBK 或 CRLF。
 - 读取 `VERSION` 与 `extra-files` 时会剔除 `\r`，兼容 CRLF 内容。
 - zip 内文件名以 UTF-8 编码写入。

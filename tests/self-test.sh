@@ -8,25 +8,32 @@ TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
 PY="$(command -v python3 || command -v python || true)"
-[ -n "$PY" ] || { printf '[self-test] 失败: 未找到 python\n' >&2; exit 1; }
+[ -n "$PY" ] || {
+  printf '[self-test] 失败: 未找到 python\n' >&2
+  exit 1
+}
 
-fail() { printf '[self-test] 失败: %s\n' "$*" >&2; exit 1; }
+fail() {
+  printf '[self-test] 失败: %s\n' "$*" >&2
+  exit 1
+}
 pass() { printf '[self-test] %s\n' "$*"; }
 
 make_base() { # $1=BASE 目录
   local base="$1"
   mkdir -p "$base/references" "$base/scripts" "$base/docs"
-  printf '# Test Skill\n\n测试内容\n' > "$base/SKILL.md"
-  printf '参考内容\n' > "$base/references/guide.md"
-  printf 'echo ok\n' > "$base/scripts/run.sh"
-  printf 'CHANGELOG\n' > "$base/CHANGELOG.md"
-  printf '额外文件\n' > "$base/extra.txt"
-  printf '嵌套额外文件\n' > "$base/docs/note.txt"
-  printf '不应打包\n' > "$base/secret.txt"
+  printf '# Test Skill\n\n测试内容\n' >"$base/SKILL.md"
+  printf '参考内容\n' >"$base/references/guide.md"
+  printf 'echo ok\n' >"$base/scripts/run.sh"
+  printf 'CHANGELOG\n' >"$base/CHANGELOG.md"
+  printf '额外文件\n' >"$base/extra.txt"
+  printf '嵌套额外文件\n' >"$base/docs/note.txt"
+  printf '不应打包\n' >"$base/secret.txt"
 }
 
 run_pack() { # $1=工作目录，其余为传给脚本的 VAR=value 环境变量
-  local ws="$1"; shift
+  local ws="$1"
+  shift
   (cd "$ws" && GITHUB_WORKSPACE="$ws" "$@" RELEASE_SKILL_SKIP_UPLOAD=1 bash "$SCRIPT")
 }
 
@@ -34,7 +41,7 @@ run_pack() { # $1=工作目录，其余为传给脚本的 VAR=value 环境变量
 CASE1="$TMP/case1"
 mkdir -p "$CASE1/base"
 make_base "$CASE1/base"
-printf '1.2.3\r\n' > "$CASE1/base/VERSION"
+printf '1.2.3\r\n' >"$CASE1/base/VERSION"
 
 run_pack "$CASE1" env \
   'INPUT_SKILL-NAME=Test Skill' \
@@ -119,7 +126,7 @@ pass '用例3通过: 缺白名单必需项时报错'
 # ---------- 用例4: 仅含 SKILL.md 的最小 Skill（无 references/scripts）应可打包 ----------
 CASE4="$TMP/case4"
 mkdir -p "$CASE4/base"
-printf '# Minimal\n' > "$CASE4/base/SKILL.md"
+printf '# Minimal\n' >"$CASE4/base/SKILL.md"
 
 run_pack "$CASE4" env \
   'INPUT_SKILL-NAME=Minimal' \
