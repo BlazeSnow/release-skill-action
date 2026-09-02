@@ -30,14 +30,23 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          create_args=(--title "$GITHUB_REF_NAME" --generate-notes)
+          if [[ "$GITHUB_REF_NAME" == *-* ]]; then
+            echo "tag 含 '-'，按预发布版本处理"
+            create_args+=(--prerelease)
+          fi
           if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
             echo "Release 已存在，跳过创建"
           else
-            gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --generate-notes
+            gh release create "$GITHUB_REF_NAME" "${create_args[@]}"
           fi
 
-      - name: 更新主版本标签（供 @v主版本 引用）
+      - name: 更新主版本标签（仅正式版）
         run: |
+          if [[ "$GITHUB_REF_NAME" == *-* ]]; then
+            echo "$GITHUB_REF_NAME 为预发布版本，不更新主版本标签"
+            exit 0
+          fi
           major="${GITHUB_REF_NAME%%.*}"
           if [ "$major" = "$GITHUB_REF_NAME" ]; then
             echo "tag 不含次版本号，跳过主版本标签更新"
