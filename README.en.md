@@ -50,6 +50,9 @@ jobs:
 | `skill-lower-name` | Yes | Lowercase skill name (the actual deployment name); also the root directory name inside the zip |
 | `base-dir` | Yes | The BASE directory where the whitelisted files live (relative to the repository root) |
 | `extra-files` | No | Extra files or folders to copy, one per line, relative to the BASE directory; `#` comments are supported |
+| `release-body` | No | Release body text; when provided it replaces the auto-generated notes |
+| `prerelease` | No | Mark the Release as a prerelease (default `false`) |
+| `draft` | No | Save the Release as a draft instead of publishing it, so it can be reviewed first (default `false`) |
 | `tag` | No | The tag of the target Release; defaults to the current ref name (a tag push trigger is recommended) |
 | `token` | No | GitHub Token; defaults to `github.token` |
 

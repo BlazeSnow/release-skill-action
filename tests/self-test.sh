@@ -149,4 +149,49 @@ print("[self-test] 用例4: 最小 Skill 打包校验通过")
 PYEOF
 pass '用例4通过: 无 references/scripts 的最小 Skill 可正常打包'
 
+# ---------- 用例5: 假 gh 验证创建参数（release-body/prerelease/draft 映射） ----------
+CASE5="$TMP/case5"
+mkdir -p "$CASE5/base" "$CASE5/fakebin"
+printf '# Body Skill\n' >"$CASE5/base/SKILL.md"
+cat >"$CASE5/fakebin/gh" <<'FAKEGH'
+#!/usr/bin/env bash
+printf '%s\n' "$*" >>"$FAKE_GH_LOG"
+if [ "${1:-}" = release ] && [ "${2:-}" = view ]; then
+  case "$*" in
+    *--json*) printf 'https://example.com/release\n'
+      exit 0 ;;
+    *) exit 1 ;;
+  esac
+fi
+exit 0
+FAKEGH
+chmod +x "$CASE5/fakebin/gh"
+
+(
+  cd "$CASE5" && GITHUB_WORKSPACE="$CASE5" \
+    PATH="$CASE5/fakebin:$PATH" \
+    FAKE_GH_LOG="$CASE5/gh.log" \
+    GITHUB_REPOSITORY=example/skill \
+    env \
+    'INPUT_SKILL-NAME=Body Skill' \
+    'INPUT_SKILL-LOWER-NAME=body-skill' \
+    'INPUT_BASE-DIR=base' \
+    'INPUT_TOKEN=fake-token' \
+    'INPUT_RELEASE-BODY=自定义说明内容' \
+    'INPUT_PRERELEASE=true' \
+    'INPUT_DRAFT=true' \
+    GITHUB_REF_NAME=v0.5.0 \
+    bash "$SCRIPT"
+)
+
+create_line="$(grep '^release create ' "$CASE5/gh.log")"
+[ -n "$create_line" ] || fail '用例5: 未调用 gh release create'
+grep -F -- '--notes 自定义说明内容' "$CASE5/gh.log" >/dev/null || fail '用例5: release-body 未映射为 --notes'
+grep -F -- '--prerelease' "$CASE5/gh.log" >/dev/null || fail '用例5: prerelease 未映射为 --prerelease'
+grep -F -- '--draft' "$CASE5/gh.log" >/dev/null || fail '用例5: draft 未映射为 --draft'
+if grep -q -- '--generate-notes' "$CASE5/gh.log"; then
+  fail '用例5: 提供 release-body 时不应使用 --generate-notes'
+fi
+pass '用例5通过: release-body/prerelease/draft 正确映射到 gh 参数'
+
 pass '全部自测通过'
