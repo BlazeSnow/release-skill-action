@@ -24,6 +24,10 @@ inputs:
     description: 'Release 说明正文（提供后替换自动生成的变更说明）'
     required: false
     default: ''
+  release-name:
+    description: '自定义 Release 标题（默认 <skill-name>-Skill-<版本号>）'
+    required: false
+    default: ''
   prerelease:
     description: '将 Release 标记为预发布版本'
     required: false
@@ -68,6 +72,7 @@ runs:
         BASE_DIR: ${{ inputs.base-dir }}
         EXTRA_FILES: ${{ inputs.extra-files }}
         RELEASE_BODY: ${{ inputs.release-body }}
+        RELEASE_NAME: ${{ inputs.release-name }}
         TAG: ${{ inputs.tag }}
         PRERELEASE: ${{ inputs.prerelease }}
         DRAFT: ${{ inputs.draft }}

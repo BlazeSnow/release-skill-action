@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## V1.0-beta.4
+
+1. 新增 release-name 输入，可自定义 Release 标题，默认仍为 `<skill-name>-Skill-<版本号>`
+
 ## V1.0-beta.3
 
 1. 修复真实 runner 上带连字符输入（skill-name 等）读取失败的问题：runner 不为非法变量名注入 `INPUT_*` 环境变量，改为在 action.yml 中用 `${{ inputs.* }}` 显式映射后传入脚本

@@ -51,6 +51,7 @@ jobs:
 | `base-dir` | 是 | BASE 目录，白名单文件所在位置（相对仓库根目录） |
 | `extra-files` | 否 | 额外复制的文件或文件夹，每行一个，相对 BASE 目录，支持 `#` 注释 |
 | `release-body` | 否 | Release 说明正文；提供后替换自动生成的变更说明 |
+| `release-name` | 否 | 自定义 Release 标题，默认 `<skill-name>-Skill-<版本号>` |
 | `prerelease` | 否 | 将 Release 标记为预发布版本（默认 `false`） |
 | `draft` | 否 | 将 Release 存为草稿，人工确认后再发布（默认 `false`） |
 | `tag` | 否 | 目标 Release 的 tag，默认取当前 ref 名（建议以 tag 推送触发） |

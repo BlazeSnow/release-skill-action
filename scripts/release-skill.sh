@@ -18,6 +18,7 @@ EXTRA_FILES_INPUT="${EXTRA_FILES:-}"
 TAG_INPUT="${TAG:-}"
 TOKEN_INPUT="${TOKEN:-}"
 RELEASE_BODY="${RELEASE_BODY:-}"
+RELEASE_NAME="${RELEASE_NAME:-}"
 PRERELEASE_INPUT="${PRERELEASE:-}"
 DRAFT_INPUT="${DRAFT:-}"
 
@@ -78,6 +79,7 @@ if [ "${RELEASE_SKILL_SKIP_UPLOAD:-0}" = 1 ]; then
 fi
 
 [ -n "$TAG" ] || die '无法确定 Release tag（请提供 tag 输入或以 tag 推送触发）'
-upload_release "$ZIP_PATH" "$TAG" "${SKILL_NAME}-Skill-${VERSION}" "$RELEASE_BODY" "$PRERELEASE_INPUT" "$DRAFT_INPUT" "$TOKEN_INPUT"
+TITLE="${RELEASE_NAME:-${SKILL_NAME}-Skill-${VERSION}}"
+upload_release "$ZIP_PATH" "$TAG" "$TITLE" "$RELEASE_BODY" "$PRERELEASE_INPUT" "$DRAFT_INPUT" "$TOKEN_INPUT"
 print_release_url "$TAG"
 log "完成: $ZIP_NAME（版本 $VERSION）"

@@ -178,6 +178,7 @@ chmod +x "$CASE5/fakebin/gh"
     'BASE_DIR=base' \
     'TOKEN=fake-token' \
     'RELEASE_BODY=自定义说明内容' \
+    'RELEASE_NAME=自定义标题' \
     'PRERELEASE=true' \
     'DRAFT=true' \
     GITHUB_REF_NAME=v0.5.0 \
@@ -186,12 +187,13 @@ chmod +x "$CASE5/fakebin/gh"
 
 create_line="$(grep '^release create ' "$CASE5/gh.log")"
 [ -n "$create_line" ] || fail '用例5: 未调用 gh release create'
+grep -F -- '--title 自定义标题' "$CASE5/gh.log" >/dev/null || fail '用例5: release-name 未映射为 --title'
 grep -F -- '--notes 自定义说明内容' "$CASE5/gh.log" >/dev/null || fail '用例5: release-body 未映射为 --notes'
 grep -F -- '--prerelease' "$CASE5/gh.log" >/dev/null || fail '用例5: prerelease 未映射为 --prerelease'
 grep -F -- '--draft' "$CASE5/gh.log" >/dev/null || fail '用例5: draft 未映射为 --draft'
 if grep -q -- '--generate-notes' "$CASE5/gh.log"; then
   fail '用例5: 提供 release-body 时不应使用 --generate-notes'
 fi
-pass '用例5通过: release-body/prerelease/draft 正确映射到 gh 参数'
+pass '用例5通过: release-name/release-body/prerelease/draft 正确映射到 gh 参数'
 
 pass '全部自测通过'
