@@ -4,7 +4,12 @@
 
 ## 使用
 
-在被打包的 Skill 所在仓库中创建 workflow：
+在被打包的 Skill 所在仓库中创建 workflow。
+
+引用方式二选一：
+
+- `@v1`：正式版主版本标签，随发布自动更新，推荐生产环境使用
+- `@main`：跟随 main 分支最新代码
 
 ```yaml
 name: Release Skill

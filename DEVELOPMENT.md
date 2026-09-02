@@ -24,7 +24,7 @@
    - 校验 tag 与 `VERSION` 一致（防止忘记更新 VERSION）；
    - 运行自测；
    - 用 `ncipollo/release-action@v1` 创建 GitHub Release（自动生成说明；tag 含 `-` 自动标记为 prerelease，`allowUpdates` 允许重跑覆盖）；
-   - 仅正式版强制更新主版本标签（如 `v1.0.0` → `v1`）。预发布版本（如 `v1.0-beta.1`）不移动 `@v1`，使用方通过 `uses: BlazeSnow/release-skill-action@v1` 始终引用正式版。
+   - 仅正式版强制更新主版本标签（如 `v1.0.0` → `v1`）。预发布版本（如 `v1.0-beta.1`）不移动 `@v1`，使用方通过 `uses: BlazeSnow/release-skill-action@v1` 始终引用正式版；也可引用 `@main` 跟随 main 分支。
 
 `tag.ps1` 为 UTF-8（带 BOM）+ CRLF 编码，兼容 Windows PowerShell 5.1 的中文输出。
 
