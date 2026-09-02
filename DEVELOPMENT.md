@@ -24,7 +24,7 @@
 ## 发布流程
 
 1. 修改 `VERSION`（如 `v1.0-beta.1`）并提交。
-2. 运行 `./tag.ps1`：校验工作区干净、版本号格式、本地与远端无同名 tag 后，推送该 tag。
+2. 运行 `./tag.ps1`：校验工作区干净、版本号格式、本地与远端无同名 tag 后，显示将推送的 tag 与指向提交，输入 `y` 确认才会创建并推送。
 3. `release.yml` 自动执行：
    - 校验 tag 与 `VERSION` 一致（防止忘记更新 VERSION）；
    - 运行自测；
@@ -35,7 +35,7 @@
 
 ## 实现说明
 
-- **输入读取**：复合动作的 input 以 `INPUT_<大写名称>` 环境变量传入，名称中的连字符保留，bash 无法以 `$` 直接引用，脚本统一通过 `printenv` 读取并剔除 `\r`。
+- **输入传递**：GitHub runner 不为带连字符的 input 注入 `INPUT_*` 环境变量（环境变量名仅允许 `[A-Za-z_][A-Za-z0-9_]`，非法时被静默丢弃），因此 `action.yml` 在步骤的 `env:` 中用 `${{ inputs.* }}` 显式映射为合法变量名（`SKILL_NAME`、`SKILL_LOWER_NAME`、`BASE_DIR`、`EXTRA_FILES`、`RELEASE_BODY`、`TAG`、`PRERELEASE`、`DRAFT`、`TOKEN`），脚本直接读取环境变量。
 - **白名单复制**：必需项（`SKILL.md`）缺失时直接报错退出；可选项（`references/`、`scripts/`、`CHANGELOG.md`、`LICENSE`、`README.md`、`VERSION`）缺失时记录日志并跳过；`extra-files` 每行一个，支持 `#` 注释，禁止上级路径逃逸。
 - **版本号**：`VERSION` 文件第一行 > `tag` 输入 > `GITHUB_REF_NAME`；读取时剔除首尾空白与 `\r`。
 - **打包**：优先使用 `zip`，找不到时回退 Python `zipfile`（可用环境变量 `RELEASE_SKILL_PACKER=zip|python` 强制指定）。Python 路径对非 ASCII 文件名会正确写入 UTF-8 标志位。

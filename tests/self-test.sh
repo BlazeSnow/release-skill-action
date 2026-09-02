@@ -44,12 +44,12 @@ make_base "$CASE1/base"
 printf '1.2.3\r\n' >"$CASE1/base/VERSION"
 
 run_pack "$CASE1" env \
-  'INPUT_SKILL-NAME=Test Skill' \
-  'INPUT_SKILL-LOWER-NAME=test-skill' \
-  'INPUT_BASE-DIR=base' \
-  "INPUT_EXTRA-FILES=extra.txt
+  'SKILL_NAME=Test Skill' \
+  'SKILL_LOWER_NAME=test-skill' \
+  'BASE_DIR=base' \
+  "EXTRA_FILES=extra.txt
 docs/note.txt" \
-  'INPUT_TOKEN=fake-token' \
+  'TOKEN=fake-token' \
   GITHUB_REF_NAME=should-not-win \
   "GITHUB_OUTPUT=$CASE1/github_output"
 
@@ -91,10 +91,10 @@ mkdir -p "$CASE2/base"
 make_base "$CASE2/base"
 
 run_pack "$CASE2" env \
-  'INPUT_SKILL-NAME=Test Skill' \
-  'INPUT_SKILL-LOWER-NAME=test-skill' \
-  'INPUT_BASE-DIR=base' \
-  'INPUT_TOKEN=fake-token' \
+  'SKILL_NAME=Test Skill' \
+  'SKILL_LOWER_NAME=test-skill' \
+  'BASE_DIR=base' \
+  'TOKEN=fake-token' \
   GITHUB_REF_NAME=v9.8.7 \
   RELEASE_SKILL_PACKER=python
 
@@ -116,9 +116,9 @@ pass '用例2通过: 版本号回退到 ref 名'
 CASE3="$TMP/case3"
 mkdir -p "$CASE3/base"
 if run_pack "$CASE3" env \
-  'INPUT_SKILL-NAME=Broken' \
-  'INPUT_SKILL-LOWER-NAME=broken' \
-  'INPUT_BASE-DIR=base'; then
+  'SKILL_NAME=Broken' \
+  'SKILL_LOWER_NAME=broken' \
+  'BASE_DIR=base'; then
   fail '用例3: 缺少 SKILL.md 时应当报错退出'
 fi
 pass '用例3通过: 缺白名单必需项时报错'
@@ -129,10 +129,10 @@ mkdir -p "$CASE4/base"
 printf '# Minimal\n' >"$CASE4/base/SKILL.md"
 
 run_pack "$CASE4" env \
-  'INPUT_SKILL-NAME=Minimal' \
-  'INPUT_SKILL-LOWER-NAME=minimal' \
-  'INPUT_BASE-DIR=base' \
-  'INPUT_TOKEN=fake-token' \
+  'SKILL_NAME=Minimal' \
+  'SKILL_LOWER_NAME=minimal' \
+  'BASE_DIR=base' \
+  'TOKEN=fake-token' \
   GITHUB_REF_NAME=v0.1.0
 
 "$PY" - "$CASE4" <<'PYEOF'
@@ -173,13 +173,13 @@ chmod +x "$CASE5/fakebin/gh"
     FAKE_GH_LOG="$CASE5/gh.log" \
     GITHUB_REPOSITORY=example/skill \
     env \
-    'INPUT_SKILL-NAME=Body Skill' \
-    'INPUT_SKILL-LOWER-NAME=body-skill' \
-    'INPUT_BASE-DIR=base' \
-    'INPUT_TOKEN=fake-token' \
-    'INPUT_RELEASE-BODY=自定义说明内容' \
-    'INPUT_PRERELEASE=true' \
-    'INPUT_DRAFT=true' \
+    'SKILL_NAME=Body Skill' \
+    'SKILL_LOWER_NAME=body-skill' \
+    'BASE_DIR=base' \
+    'TOKEN=fake-token' \
+    'RELEASE_BODY=自定义说明内容' \
+    'PRERELEASE=true' \
+    'DRAFT=true' \
     GITHUB_REF_NAME=v0.5.0 \
     bash "$SCRIPT"
 )

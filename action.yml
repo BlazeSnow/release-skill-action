@@ -60,4 +60,16 @@ runs:
     - id: release
       name: 打包并上传 Skill
       shell: bash
+      # runner 不会为带连字符的 input 注入 INPUT_* 环境变量，
+      # 因此这里用 env 显式映射为合法变量名后传给脚本
+      env:
+        SKILL_NAME: ${{ inputs.skill-name }}
+        SKILL_LOWER_NAME: ${{ inputs.skill-lower-name }}
+        BASE_DIR: ${{ inputs.base-dir }}
+        EXTRA_FILES: ${{ inputs.extra-files }}
+        RELEASE_BODY: ${{ inputs.release-body }}
+        TAG: ${{ inputs.tag }}
+        PRERELEASE: ${{ inputs.prerelease }}
+        DRAFT: ${{ inputs.draft }}
+        TOKEN: ${{ inputs.token }}
       run: bash "${{ github.action_path }}/scripts/release-skill.sh"
