@@ -21,6 +21,8 @@ EXTRA_FILES_INPUT="$(get_input 'EXTRA-FILES')"
 TAG_INPUT="$(get_input 'TAG')"
 TOKEN_INPUT="$(get_input 'TOKEN')"
 RELEASE_BODY="$(get_input 'RELEASE-BODY')"
+PRERELEASE_INPUT="$(get_input 'PRERELEASE')"
+DRAFT_INPUT="$(get_input 'DRAFT')"
 
 REF_NAME="${GITHUB_REF_NAME:-}"
 REPO_ROOT="${GITHUB_WORKSPACE:-$PWD}"
@@ -192,6 +194,12 @@ else
   fi
   if [ -n "${GITHUB_SHA:-}" ]; then
     create_args+=(--target "$GITHUB_SHA")
+  fi
+  if [ "$PRERELEASE_INPUT" = true ]; then
+    create_args+=(--prerelease)
+  fi
+  if [ "$DRAFT_INPUT" = true ]; then
+    create_args+=(--draft)
   fi
   gh release create "$TAG" "$ZIP_PATH" "${create_args[@]}"
 fi

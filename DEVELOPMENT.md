@@ -34,7 +34,7 @@
 - **白名单复制**：必需项（`SKILL.md`）缺失时直接报错退出；可选项（`references/`、`scripts/`、`CHANGELOG.md`、`LICENSE`、`README.md`、`VERSION`）缺失时记录日志并跳过；`extra-files` 每行一个，支持 `#` 注释，禁止上级路径逃逸。
 - **版本号**：`VERSION` 文件第一行 > `tag` 输入 > `GITHUB_REF_NAME`；读取时剔除首尾空白与 `\r`。
 - **打包**：优先使用 `zip`，找不到时回退 Python `zipfile`（可用环境变量 `RELEASE_SKILL_PACKER=zip|python` 强制指定）。Python 路径对非 ASCII 文件名会正确写入 UTF-8 标志位。
-- **上传**：通过 `gh` CLI；Release 已存在则 `gh release upload --clobber` 覆盖同名资产，不存在则 `gh release create` 创建——`release-body` 输入提供时作为 `--notes`，否则用 `--generate-notes` 自动生成。
+- **上传**：通过 `gh` CLI；Release 已存在则 `gh release upload --clobber` 覆盖同名资产，不存在则 `gh release create` 创建——`release-body` 输入提供时作为 `--notes`，否则用 `--generate-notes` 自动生成；`prerelease`/`draft` 布尔输入分别映射 `--prerelease`/`--draft`（默认关闭）。
 - **测试钩子**：`RELEASE_SKILL_SKIP_UPLOAD=1` 跳过上传，供本地与 CI 自测使用。
 
 ## 本地自测
@@ -49,6 +49,7 @@ bash tests/self-test.sh
 2. 无 `VERSION` 文件时版本号回退到 ref 名，并强制 `RELEASE_SKILL_PACKER=python` 验证回退打包路径。
 3. 缺少必需项（`SKILL.md`）时脚本报错退出。
 4. 仅含 `SKILL.md` 的最小 Skill（无 `references/`、`scripts/`）可正常打包。
+5. 用假 `gh` 替身验证创建参数映射：`release-body` → `--notes`、`prerelease` → `--prerelease`、`draft` → `--draft`，且提供 `release-body` 时不再使用 `--generate-notes`。
 
 CI 在 ubuntu runner 上运行同一脚本，天然覆盖 `zip` 打包路径；本地（Windows Git Bash）通常无 `zip`，覆盖 Python 路径。
 
