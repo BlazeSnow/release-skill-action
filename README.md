@@ -1,5 +1,7 @@
 # release-skill-action
 
+简体中文 | [English](README.en.md)
+
 将 Skill 按白名单打包为 zip 并上传至 GitHub Release 的 GitHub Action（composite）。
 
 ## 使用
